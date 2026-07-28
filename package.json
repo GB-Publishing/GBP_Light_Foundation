@@ -1,0 +1,13 @@
+{
+  "name": "com.gamebee.light.foundation",
+  "version": "4.5.0",
+  "displayName": "GBP Light Foundation",
+  "description": "GBP Light Foundation",
+  "unity": "2019.3",
+  "type": "library",
+  "hideInEditor": false,
+  "author": "Gamebee Studio Publishing",
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.0.2"
+  }
+}
