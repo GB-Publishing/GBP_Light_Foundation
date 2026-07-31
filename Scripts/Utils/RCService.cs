@@ -21,6 +21,16 @@ namespace Gamebee.Utils
         {
             var text = JsonConvert.SerializeObject(data);
             Clazz.CallStatic("setRCData", text);
+            Debug.Log(text);
+        }
+
+        public static String GetCurrentTimezone()
+        {
+#if UNITY_EDITOR
+            return TimeZoneInfo.Local.Id;
+#else
+            return Clazz.CallStatic<string>("getCurrentTimezone");
+#endif
         }
     }
 
@@ -32,6 +42,7 @@ namespace Gamebee.Utils
 
         public void onDataReceived(string data)
         {
+            Debug.Log(data);
             if (!GBPManager.IsMainThread)
             {
                 GBPManager.RunOnMain(() => onDataReceived(data));
@@ -61,13 +72,7 @@ namespace Gamebee.Utils
         {
             if (CachedTimeZone == null)
             {
-#if UNITY_EDITOR
-                CachedTimeZone = TimeZoneInfo.Local.Id;
-#elif UNITY_ANDROID
-                CachedTimeZone = Core.Natives.Android.AndroidUtility.GetTimeZone();
-#elif UNITY_IOS || UNITY_TVOS || UNITY_STANDALONE_OSX
-                CachedTimeZone = AppleUtility.GetTimeZone();
-#endif
+                CachedTimeZone = RCService.GetCurrentTimezone();
             }
 
             return CachedTimeZone;

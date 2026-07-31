@@ -32,7 +32,7 @@ namespace Gamebee.Utils
             {
                 if (!rcData.Data.TryGetValue(expPair.Key, out var data)) continue;
 
-                var expression = RCOverride.Parse(expPair.Key, expPair.Value, data as JValue);
+                var expression = RCOverride.Parse(expPair.Key, expPair.Value, data);
                 if (expression == null) continue;
 
                 yield return expression;
@@ -89,6 +89,7 @@ namespace Gamebee.Utils
                 // Simple variable
                 return name switch
                 {
+                    "DeviceModel" => "\'" + Get_DeviceModel() + "\'",
                     "Locale" => "\'" + Get_Locale() + "\'",
                     "TimeZone" => "\'" + Get_TimeZone() + "\'",
                     "TimeStamp" => "" + Get_TimeStamp(),
@@ -97,6 +98,15 @@ namespace Gamebee.Utils
                     "ScreenWidth" => "" + Get_ScreenWidth(),
                     "ScreenHeight" => "" + Get_ScreenHeight(),
                     "Version" => "\'" + Get_Version() + "\'",
+                    "IsUS" => "" + IsUS(),
+                    "IsCA" => "" + IsCA(),
+                    "IsEU" => "" + IsEU(),
+                    "IsJP" => "" + IsJP(),
+                    "IsAU" => "" + IsAU(),
+                    "IsBR" => "" + IsBR(),
+                    "IsOSX" => "" + IsOSX(),
+                    "IsIOS" => "" + IsIOS(),
+                    "IsTVOS" => "" + IsTVOS(),
                     _ => "0"
                 };
             }
@@ -121,6 +131,7 @@ namespace Gamebee.Utils
             };
         }
 
+        private string Get_DeviceModel() => ExpValueProvider.DeviceModel();
         private string Get_TimeZone() => ExpValueProvider.TimeZone();
         private long Get_TimeStamp() => ExpValueProvider.TimeStamp();
         private string Get_Locale() => ExpValueProvider.Locale();
@@ -134,16 +145,26 @@ namespace Gamebee.Utils
         private float Get_PP(string key, float def) => ExpValueProvider.PP(key, def);
         private string Get_PP(string key, string def) => ExpValueProvider.PP(key, def);
         private bool Get_PP(string key, bool def) => ExpValueProvider.PP(key, def);
+
+        private bool IsUS() => ExpValueProvider.IsUS();
+        private bool IsCA() => ExpValueProvider.IsCA();
+        private bool IsEU() => ExpValueProvider.IsEU();
+        private bool IsJP() => ExpValueProvider.IsJP();
+        private bool IsAU() => ExpValueProvider.IsAU();
+        private bool IsBR() => ExpValueProvider.IsBR();
+        private bool IsOSX() => ExpValueProvider.IsOSX();
+        private bool IsIOS() => ExpValueProvider.IsIOS();
+        private bool IsTVOS() => ExpValueProvider.IsTVOS();
     }
 
     public class RCOverride
     {
         public string Name;
         public Condition[] Conditions;
-        public JValue Default;
-        public JValue Result;
+        public JToken Default;
+        public JToken Result;
 
-        public static RCOverride Parse(string name, JToken value, JValue defaultValue)
+        public static RCOverride Parse(string name, JToken value, JToken defaultValue)
         {
             var rcOverride = new RCOverride
             {
@@ -159,7 +180,7 @@ namespace Gamebee.Utils
             return rcOverride;
         }
 
-        public JValue Evaluate(ExpressionEvaluator evaluator)
+        public JToken Evaluate(ExpressionEvaluator evaluator)
         {
             foreach (var condition in Conditions)
             {
@@ -174,12 +195,12 @@ namespace Gamebee.Utils
     public class Condition
     {
         public string If;
-        public JValue Then;
+        public JToken Then;
 
         public Condition(JObject data)
         {
             If = data["If"].Value<string>();
-            Then = data["Then"] as JValue;
+            Then = data["Then"];
         }
     }
 }
