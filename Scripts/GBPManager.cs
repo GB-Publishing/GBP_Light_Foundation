@@ -89,6 +89,7 @@ namespace Gamebee
         /// <param name="data"> Initialization data </param>
         public static void Init(GBPInitData data)
         {
+            Debug.Log("Welcome To GBP Light v1.0.0");
             if (Instance == null) CreateOrLoadInstance();
             if (Instance == null) return;
             if (Instance?._gbpInitData is { }) return;
