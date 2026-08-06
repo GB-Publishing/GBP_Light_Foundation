@@ -49,7 +49,13 @@ namespace Gamebee.Utils
                 return;
             }
 
-            var rcData = JsonConvert.DeserializeObject<RCData>(data);
+            var jdata = JObject.Parse(data);
+            var rcData = new RCData()
+            {
+                Data = jdata["Data"] as JObject,
+                Overrides = jdata["Overrides"] as JObject
+            };
+            
             var evaluator = new ExpressionEvaluator { ExpValueProvider = new RCVarProvider() };
 
             evaluator.EvaluateExpressions(rcData);
@@ -57,10 +63,13 @@ namespace Gamebee.Utils
         }
     }
 
+    [Serializable]
     public class RCData
     {
         public JObject Data;
         public JObject Overrides;
+
+        public RCData() { }
     }
 
     public class RCVarProvider : IExpValueProvider
